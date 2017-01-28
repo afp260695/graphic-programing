@@ -4,8 +4,8 @@
 
 typedef struct
 {
-	int x,
-	int y
+	int x1, y1;
+	int x2, y2;
 } garis;
 
 void gambarGaris(garis* G, matrix* M, char c);
