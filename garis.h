@@ -2,12 +2,12 @@
 #define GARIS_H
 #include "matrix.h"
 
-typedef struct 
+typedef struct
 {
 	int x,
 	int y
 } garis;
 
-void gambarGaris(garis* G, matrix* M);
+void gambarGaris(garis* G, matrix* M, char c);
 
 #endif
