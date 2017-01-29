@@ -58,3 +58,33 @@ Object makePesawat(int xinit, int yinit) {
 	O.size = 22;
 	return O;
 }
+
+Object makeLedakan(int xinit, int yinit) {
+	int x[20] = {0, 20, 46, 40, 84, 54, 86, 51, 72, 29, 28, 4, -34, -19, -60, -22, -67, -21, -47, -4};
+	int y[20] = {0, 54, -2, 61, 39, 86, 96, 107, 145, 116, 148, 112, 117, 103, 107, 79, 64, 56, 8, 49};
+	Object O;
+	for(int i = 0;i < 20;i++) {
+		O.P[i].x = x[i];
+		O.P[i].y = y[i];
+	}
+
+	O.pointInit.x = xinit;
+	O.pointInit.y = yinit;
+	O.size = 20;
+	return O;
+}
+
+Object makeMeriamAtas(int xinitA, int yinitA) {
+	int x[4] = {13, 13, -13, -13};
+	int y[4] = {-117, -207, 207, 117};
+	Object O;
+	for(int i = 0;i < 4;i++) {
+		O.P[i].x = x[i];
+		O.P[i].y = y[i];
+	}
+
+	O.pointInit.x = xinitA;
+	O.pointInit.y = yinitA;
+	O.size = 4;
+	return O;
+}
