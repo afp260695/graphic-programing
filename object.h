@@ -1,16 +1,19 @@
 #ifndef OBJECT_H
 #define OBJECT_H
-#include "garis.h"
+#include "point.h"
+#include "matrix.h"
 
 typedef struct
 {
-	garis *G;
-	lingkaran *L
-} object;
+	Point pointInit;
+	Point P[30];
+	int size;
+} Object;
 
-void moveXY(object* O, int x, int y);
-void moveVertical(object* O, int y);
-void moveHorizontal(object* O, int x);
-void gambarObject(Object* O, matrix* M, char c)
-
+void setXYObject(Object* O, int x, int y);
+void moveVertical(Object* O, int y);
+void moveHorizontal(Object* O, int x);
+void gambarObject(Object O, Matrix* M, char c);
+Object makePeluru();
+Object makePesawat(int xinit, int yinit);
 #endif

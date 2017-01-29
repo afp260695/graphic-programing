@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void gambarLingkaran(lingkaran* L, matrix* M, char c) {
+void gambarLingkaran(Lingkaran* L, Matrix* M, char c) {
     if (sizeof(L) != 0){
         if ((sizeof(M -> xsize)) != 0) {
             if (sizeof(M -> ysize != 0)) {
@@ -58,7 +58,7 @@ void gambarLingkaran(lingkaran* L, matrix* M, char c) {
     }
 }
 
-int isLingkaranPutus(lingkaran* L, matrix* M, char c) {
+int isLingkaranPutus(Lingkaran* L, Matrix* M, char c) {
     int ret = 0;
     if (sizeof(L) != 0){
         if ((sizeof(M -> xsize)) != 0) {
@@ -130,75 +130,75 @@ int isLingkaranPutus(lingkaran* L, matrix* M, char c) {
     return ret;
 }
 
-int main() {
+// int main() {
 
-    matrix M;
-    M.M = malloc(50*sizeof(char*));
-    int i, j;
-    for (i = 0; i < 50; i++) {
-        M.M[i] = malloc(50*sizeof(char));
-    }
-    M.xsize = 50;
-    M.ysize = 50;
+//     matrix M;
+//     M.M = malloc(50*sizeof(char*));
+//     int i, j;
+//     for (i = 0; i < 50; i++) {
+//         M.M[i] = malloc(50*sizeof(char));
+//     }
+//     M.xsize = 50;
+//     M.ysize = 50;
 
-    for (i = 0; i < 50; i++) {
-        for (j = 0; j< 50; j++) {
-            M.M[i][j] = '.';
-        }
-    }
+//     for (i = 0; i < 50; i++) {
+//         for (j = 0; j< 50; j++) {
+//             M.M[i][j] = '.';
+//         }
+//     }
 
-    lingkaran L1, L2, L3, L4;
+//     lingkaran L1, L2, L3, L4;
 
-    L1.x = 10;
-    L1.y = 15;
-    L1.r = 20;
-    gambarLingkaran(&L1, &M, '1');
+//     L1.x = 10;
+//     L1.y = 15;
+//     L1.r = 20;
+//     gambarLingkaran(&L1, &M, '1');
 
-    L2.x = 30;
-    L2.y = 25;
-    L2.r = 15;
-    gambarLingkaran(&L2, &M, '2');
+//     L2.x = 30;
+//     L2.y = 25;
+//     L2.r = 15;
+//     gambarLingkaran(&L2, &M, '2');
 
-    L3.x = 40;
-    L3.y = 15;
-    L3.r = 18;
-    gambarLingkaran(&L3, &M, '3');
+//     L3.x = 40;
+//     L3.y = 15;
+//     L3.r = 18;
+//     gambarLingkaran(&L3, &M, '3');
 
-    L4.x = 5;
-    L4.y = 5;
-    L4.r = 5;
-    gambarLingkaran(&L4, &M, '4');
+//     L4.x = 5;
+//     L4.y = 5;
+//     L4.r = 5;
+//     gambarLingkaran(&L4, &M, '4');
 
-    for (i = 0; i < 50; i++) {
-        for (j = 0; j < 50; j++) {
-            printf("%c",M.M[j][i]);
-        }
-        printf("\n");
-    }
+//     for (i = 0; i < 50; i++) {
+//         for (j = 0; j < 50; j++) {
+//             printf("%c",M.M[j][i]);
+//         }
+//         printf("\n");
+//     }
 
-    if (isLingkaranPutus(&L1, &M, '1') == 1) {
-        printf("Lingkaran 1 terputus\n");
-    } else {
-        printf("Lingkaran 1 tidak terputus\n");
-    }
+//     if (isLingkaranPutus(&L1, &M, '1') == 1) {
+//         printf("Lingkaran 1 terputus\n");
+//     } else {
+//         printf("Lingkaran 1 tidak terputus\n");
+//     }
 
-    if (isLingkaranPutus(&L2, &M, '2') == 1) {
-        printf("Lingkaran 2 terputus\n");
-    } else {
-        printf("Lingkaran 2 tidak terputus\n");
-    }
+//     if (isLingkaranPutus(&L2, &M, '2') == 1) {
+//         printf("Lingkaran 2 terputus\n");
+//     } else {
+//         printf("Lingkaran 2 tidak terputus\n");
+//     }
 
-    if (isLingkaranPutus(&L3, &M, '3') == 1) {
-        printf("Lingkaran 3 terputus\n");
-    } else {
-        printf("Lingkaran 3 tidak terputus\n");
-    }
+//     if (isLingkaranPutus(&L3, &M, '3') == 1) {
+//         printf("Lingkaran 3 terputus\n");
+//     } else {
+//         printf("Lingkaran 3 tidak terputus\n");
+//     }
 
-    if (isLingkaranPutus(&L4, &M, '4') == 1) {
-        printf("Lingkaran 4 terputus\n");
-    } else {
-        printf("Lingkaran 4 tidak terputus\n");
-    }
+//     if (isLingkaranPutus(&L4, &M, '4') == 1) {
+//         printf("Lingkaran 4 terputus\n");
+//     } else {
+//         printf("Lingkaran 4 tidak terputus\n");
+//     }
 
-    return 0;
-}
+//     return 0;
+// }

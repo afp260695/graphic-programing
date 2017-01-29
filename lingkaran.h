@@ -5,15 +5,15 @@
 typedef struct
 {
 	int x, y, r;
-} lingkaran;
+} Lingkaran;
 
 //Menggambar lingkaran pada matriks
-void gambarLingkaran(lingkaran* L, matrix* M, char c);
+void gambarLingkaran(Lingkaran* L, Matrix* M, char c);
 
 //Memeriksa apakah semua bagian lingkaran pada L pada matriks M berisi karakter c
 //Mengembalikan 0 jika semuanya berisi karakter c
 //Mengembalikan 1 jika ada bagian yang tertimpa karakter lain
-int isLingkaranPutus(lingkaran* L, matrix* M, char c);
+int isLingkaranPutus(Lingkaran* L, Matrix* M, char c);
 
 
 #endif
