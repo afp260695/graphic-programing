@@ -9,16 +9,16 @@ void setXYObject(Object* O, int x, int y) {
 }
 
 void moveVertical(Object* O, int y) {
-	O->pointInit.y = O->pointInit.y + y;	
+	O->pointInit.y = O->pointInit.y + y;
 }
 
 void moveHorizontal(Object* O, int x) {
-	O->pointInit.x = O->pointInit.x + x;	
+	O->pointInit.x = O->pointInit.x + x;
 }
 
 void gambarObject(Object O, Matrix* M, char c) {
 	Point start, finish;
-	for(int i = 0;i < O.size ;i++) {
+	for(int i = 0;i < O.size-1 ;i++) {
 		setXY(&start, O.P[i].x + O.pointInit.x, O.P[i].y + O.pointInit.y);
 		setXY(&finish, O.P[i+1].x + O.pointInit.x, O.P[i+1].y + O.pointInit.y);
 		gambarGaris(start, finish, M, c);
@@ -27,6 +27,22 @@ void gambarObject(Object O, Matrix* M, char c) {
 	setXY(&start, O.P[O.size - 1].x + O.pointInit.x, O.P[O.size - 1].y + O.pointInit.y);
 	setXY(&finish, O.P[0].x + O.pointInit.x, O.P[0].y + O.pointInit.y);
 	gambarGaris(start, finish, M, c);
+}
+
+int isObjectCollide(Object O, Matrix* M, char c) {
+    int ret = 0;
+	Point start, finish;
+	for(int i = 0;i < O.size-1 && ret == 0;i++) {
+		setXY(&start, O.P[i].x + O.pointInit.x, O.P[i].y + O.pointInit.y);
+		setXY(&finish, O.P[i+1].x + O.pointInit.x, O.P[i+1].y + O.pointInit.y);
+		ret = isGarisPutus(start, finish, M, c);
+	}
+    if (ret == 0) {
+        setXY(&start, O.P[O.size - 1].x + O.pointInit.x, O.P[O.size - 1].y + O.pointInit.y);
+        setXY(&finish, O.P[0].x + O.pointInit.x, O.P[0].y + O.pointInit.y);
+        ret = isGarisPutus(start, finish, M, c);
+    }
+    return ret;
 }
 
 Object makePeluru(int xinit, int yinit) {

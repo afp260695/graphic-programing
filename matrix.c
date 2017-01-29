@@ -8,7 +8,7 @@ void initMatrix(Matrix *M, int x, int y) {
 	M->M = (char**) malloc(y * sizeof(char*));
 	for(int i = 0;i < y;i++) {
 		M->M[i] = (char*) malloc(x * sizeof(char*));
-	}	
+	}
 }
 
 void resetMatrix(Matrix *M) {
@@ -22,8 +22,8 @@ void resetMatrix(Matrix *M) {
 void printMatrix(Matrix M) {
 	for(int i = 0;i < M.ysize;i++) {
 		for(int j = 0;j < M.xsize;j++) {
-			printf("%d",M.M[i][j]);
+			printf("%c",M.M[i][j]);
 		}
 		printf("\n");
-	}	
+	}
 }
