@@ -13,7 +13,7 @@ int main(){
 	c1 = 2;
 	initMatrix(&M, 178, 200);
 	resetMatrix(&M);
-	
+
 	Object peluru = makePeluru(25,25);
 	Object pesawat = makePesawat(0,100);
 	// setXY(&P1,5,10);

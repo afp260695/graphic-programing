@@ -1,5 +1,5 @@
 #include "point.h"
-#include "algorithm.h" 
+#include "algorithm.h"
 
 void gambarGaris(Point P1, Point P2, Matrix* M, char c) {
 	int dx = absolute(P2.x-P1.x), sx = P1.x<P2.x ? 1 : -1;
@@ -30,6 +30,6 @@ void setXY(Point* P, int x, int y) {
 
 void plotXY(Matrix* M, int x, int y, char c) {
 	if(x >= 0 && y >= 0 && x < M->xsize && y < M->ysize) {
-		M->M[y][x] = c;	
+		M->M[y][x] = c;
 	}
 }

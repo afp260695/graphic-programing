@@ -9,16 +9,16 @@ void setXYObject(Object* O, int x, int y) {
 }
 
 void moveVertical(Object* O, int y) {
-	O->pointInit.y = O->pointInit.y + y;	
+	O->pointInit.y = O->pointInit.y + y;
 }
 
 void moveHorizontal(Object* O, int x) {
-	O->pointInit.x = O->pointInit.x + x;	
+	O->pointInit.x = O->pointInit.x + x;
 }
 
 void gambarObject(Object O, Matrix* M, char c) {
 	Point start, finish;
-	for(int i = 0;i < O.size ;i++) {
+	for(int i = 0;i < O.size-1 ;i++) {
 		setXY(&start, O.P[i].x + O.pointInit.x, O.P[i].y + O.pointInit.y);
 		setXY(&finish, O.P[i+1].x + O.pointInit.x, O.P[i+1].y + O.pointInit.y);
 		gambarGaris(start, finish, M, c);
