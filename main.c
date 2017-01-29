@@ -12,7 +12,7 @@ int main(){
 	char c, c1;
 	c = '1';
 	c1 = '2';
-	initMatrix(&M, 178, 200);
+	initMatrix(&M, 200, 200);
 	resetMatrix(&M);
 
 	Object peluru = makePeluru(25,25);
@@ -21,7 +21,7 @@ int main(){
 	//setXY(&P2,10,10);
 	//gambarGaris(P1, P2, &M, c);
 
-	gambarObject(peluru, &M, c);
+	gambarObject(pesawat, &M, c);
 
 	L.x = 10;
 	L.y = 15;

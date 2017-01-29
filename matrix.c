@@ -14,7 +14,7 @@ void initMatrix(Matrix *M, int x, int y) {
 void resetMatrix(Matrix *M) {
 	for(int i = 0;i < M->ysize;i++) {
 		for(int j = 0;j < M->xsize;j++) {
-			M->M[i][j] = ' ';
+			M->M[i][j] = '.';
 		}
 	}
 }
