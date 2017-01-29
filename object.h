@@ -14,6 +14,7 @@ void setXYObject(Object* O, int x, int y);
 void moveVertical(Object* O, int y);
 void moveHorizontal(Object* O, int x);
 void gambarObject(Object O, Matrix* M, char c);
+int isObjectCollide(Object O, Matrix* M, char c);
 Object makePeluru();
 Object makePesawat(int xinit, int yinit);
 #endif

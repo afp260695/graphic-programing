@@ -29,6 +29,22 @@ void gambarObject(Object O, Matrix* M, char c) {
 	gambarGaris(start, finish, M, c);
 }
 
+int isObjectCollide(Object O, Matrix* M, char c) {
+    int ret = 0;
+	Point start, finish;
+	for(int i = 0;i < O.size-1 && ret == 0;i++) {
+		setXY(&start, O.P[i].x + O.pointInit.x, O.P[i].y + O.pointInit.y);
+		setXY(&finish, O.P[i+1].x + O.pointInit.x, O.P[i+1].y + O.pointInit.y);
+		ret = isGarisPutus(start, finish, M, c);
+	}
+    if (ret == 0) {
+        setXY(&start, O.P[O.size - 1].x + O.pointInit.x, O.P[O.size - 1].y + O.pointInit.y);
+        setXY(&finish, O.P[0].x + O.pointInit.x, O.P[0].y + O.pointInit.y);
+        ret = isGarisPutus(start, finish, M, c);
+    }
+    return ret;
+}
+
 Object makePeluru(int xinit, int yinit) {
 	int x[6] = {2, 6, 6, -6, -6, -2};
 	int y[6] = {0, 8, 24, 24, 8, 0};
