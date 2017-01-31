@@ -95,23 +95,13 @@ int main(){
 	initMatrix(&M, 1200, 700);
 	resetMatrix(&M);
 
-	Object peluru = makePeluru(1500,300);
-	Object pesawat = makePesawat(550,100);
+	Object pesawat = makePesawat(950,100);
 	Object ledakan = makeLedakan(1500,100);
-	Object meriam = makeMeriam(600,550);
+	Object meriam = makeMeriam(600,750);
 
 	gambarObject(pesawat, &M, c1);
-	gambarObject(peluru, &M, c2);
     gambarObject(meriam, &M, c3);
     gambarObject(ledakan, &M, c4);
-	L.x = 10;
-	L.y = 15;
-	L.r = 20;
-    if (isObjectCollide(pesawat, &M, '0') == 1) {
-        printf("Object bertabrakan\n");
-    } else {
-        printf("Object tidak bertabrakan\n");
-    }
 
 //----------------------------------------------------------------------------------
 
@@ -140,11 +130,41 @@ int main(){
 
 //---------------
     while (c != 'a') {
+	    moveHorizontal(&pesawat,-2);
+		resetMatrix(&M);
+		gambarObject(pesawat, &M, c1);
+	    gambarObject(meriam, &M, c3);
+	    gambarObject(ledakan, &M, c4);
+
+	    for (y = 0; y < 700; y++) {
+	        for (x = 0; x < 1200; x++) {
+	            location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+	                       (y+vinfo.yoffset) * finfo.line_length;
+
+	            if (vinfo.bits_per_pixel == 32) {
+	                *(fbp + location) = M.M[y][x];        // Some blue
+	                *(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
+	                *(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
+	                *(fbp + location + 3) = 0;      // No transparency
+	            } else  { //assume 16bpp
+	                int b = 10;
+	                int g = (x-100)/6;     // A little green
+	                int r = 31-(y-100)/16;    // A lot of red
+	                unsigned short int t = r<<11 | g << 5 | b;
+	                *((unsigned short int*)(fbp + location)) = t;
+	            }
+	        }
+	    }
+	    if (isOut(&pesawat,-300,0)){
+	    	moveHorizontal(&pesawat,1500);
+	    }
 
     }
-    peluru = makePeluru(600,300);
+    Object peluru = makePeluru(600,500);
 
-    for (int aa = 0; aa < 150; aa++) {
+    do{
+	    moveVertical(&peluru,-2);
+
 	    // Figure out where in memory to put the pixel
 	    for (y = 0; y < 700; y++) {
 	        for (x = 0; x < 1200; x++) {
@@ -166,12 +186,18 @@ int main(){
 	        }
 	    }
 
-	    moveVertical(&peluru,-2);
 
         if (isObjectCollide(pesawat, &M, c1) == 1) {
         	ledakan = makeLedakan(550,100);
         	pesawat = makePesawat(1500,100);
         }
+
+	    moveHorizontal(&pesawat,-2);
+
+	    if (isOut(&pesawat,-300,0)){
+	    	moveHorizontal(&pesawat,1500);
+	    }
+
 
 		resetMatrix(&M);
 		gambarObject(pesawat, &M, c1);
@@ -179,7 +205,39 @@ int main(){
 	    gambarObject(meriam, &M, c3);
 	    gambarObject(ledakan, &M, c4);
 
+    }while(!isObjectCollide(pesawat, &M, c1));
+
+
+    //print last condition
+    moveVertical(&peluru,-300);
+	ledakan = makeLedakan(550,100);
+	pesawat = makePesawat(1500,100);
+	resetMatrix(&M);
+	gambarObject(pesawat, &M, c1);
+	gambarObject(peluru, &M, c2);
+    gambarObject(meriam, &M, c3);
+    gambarObject(ledakan, &M, c4);
+    for (y = 0; y < 700; y++) {
+        for (x = 0; x < 1200; x++) {
+            location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+                       (y+vinfo.yoffset) * finfo.line_length;
+
+            if (vinfo.bits_per_pixel == 32) {
+                *(fbp + location) = M.M[y][x];        // Some blue
+                *(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
+                *(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
+                *(fbp + location + 3) = 0;      // No transparency
+            } else  { //assume 16bpp
+                int b = 10;
+                int g = (x-100)/6;     // A little green
+                int r = 31-(y-100)/16;    // A lot of red
+                unsigned short int t = r<<11 | g << 5 | b;
+                *((unsigned short int*)(fbp + location)) = t;
+            }
+        }
     }
+
+    //closing connection
     end = 1;
     munmap(fbp, screensize);
     close(fbfd);

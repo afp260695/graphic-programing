@@ -17,6 +17,15 @@ void moveHorizontal(Object* O, int x) {
 	O->pointInit.x = O->pointInit.x + x;
 }
 
+int isOut(Object* O,int rangex, int rangey) {
+	if ((O->pointInit.x<=rangex)||(O->pointInit.y<=rangey)){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+
+
 void gambarObject(Object O, Matrix* M, char c) {
 	Point start, finish;
 	for(int i = 0;i < O.size-1 ;i++) {

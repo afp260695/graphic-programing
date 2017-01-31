@@ -16,6 +16,7 @@ typedef struct
 void setXYObject(Object* O, int x, int y);
 void moveVertical(Object* O, int y);
 void moveHorizontal(Object* O, int x);
+int isOut(Object *O, int rangex, int rangey);
 void gambarObject(Object O, Matrix* M, char c);
 int isObjectCollide(Object O, Matrix* M, char c);
 Object makePeluru(int xinit, int yinit);
