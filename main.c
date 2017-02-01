@@ -14,18 +14,29 @@
 #include <stdio.h>
 #include <pthread.h>
 
-char c = '0';
+char c;
 int end = 1;
-
+int nBullets = 0;
+Object bullets[20];
+ 
 void *get_keypress(void *x_void_ptr)
 {
 	while (end == 1) {
-		if (getchar()) {
-			c = 'a';
-		}
+		c = getchar();
 	}
 }
 
+void *make_bullets(void *x_void_ptr) {
+	while (end == 1) {
+		if (c == 'p') {
+			bullets[nBullets] = makePeluru(600,500);
+			++nBullets;
+			if (nBullets >= 19) {
+				nBullets = 0;
+			}
+		}
+	}
+}
 
 int main(){
     int fbfd = 0;
@@ -33,10 +44,10 @@ int main(){
     struct fb_fix_screeninfo finfo;
     long int screensize = 0;
     char *fbp = 0;
-    int x = 0, y = 0;
+   	int x = 0, y = 0;
     long int location = 0;
-
-    // Open the file for reading and writing
+	
+	// Open the file for reading and writing
     fbfd = open("/dev/fb0", O_RDWR);
     if (fbfd == -1) {
         perror("Error: cannot open framebuffer device");
@@ -74,13 +85,16 @@ int main(){
 
 //===============================================================================
 
-	pthread_t thread_keypress;
+	pthread_t thread_keypress, thread_bullet;
 
 	if(pthread_create(&thread_keypress, NULL, get_keypress, NULL)) {
-
 		fprintf(stderr, "Error creating thread\n");
 		return 1;
-
+	}
+	
+	if(pthread_create(&thread_bullet, NULL, make_bullets, NULL)) {
+		fprintf(stderr, "Error creating thread 2\n");
+		return 1;
 	}
 //----------------------------------------------------------------------------------
 
@@ -105,10 +119,10 @@ int main(){
 
 //----------------------------------------------------------------------------------
 
-    x = 700; y = 1200;       // Where we are going to put the pixel
+	x = 700; y = 1200;       // Where we are going to put the pixel
 
 //---------------
-    for (y = 0; y < 700; y++) {
+	for (y = 0; y < 700; y++) {
         for (x = 0; x < 1200; x++) {
             location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
                        (y+vinfo.yoffset) * finfo.line_length;
@@ -129,126 +143,95 @@ int main(){
     }
 
 //---------------
-    while (c != 'a') {
-	    moveHorizontal(&pesawat,-2);
+	int collide = 0;
+	
+	//the main display, game ends when bullet collides with plane
+	do {
+		moveHorizontal(&pesawat,-2);
+		int j;
+		for (j = 0; j < nBullets; ++j) {
+			moveVertical(&bullets[j], -2);
+		}
 		resetMatrix(&M);
 		gambarObject(pesawat, &M, c1);
-	    gambarObject(meriam, &M, c3);
-	    gambarObject(ledakan, &M, c4);
+	   	gambarObject(meriam, &M, c3);
+	   	gambarObject(ledakan, &M, c4);
+		for (j = 0; j < nBullets; ++j) {
+			gambarObject(bullets[j], &M, c2);
+		}
+	   	for (y = 0; y < 700; y++) {
+			for (x = 0; x < 1200; x++) {
+				location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+				(y+vinfo.yoffset) * finfo.line_length;
 
-	    for (y = 0; y < 700; y++) {
-	        for (x = 0; x < 1200; x++) {
-	            location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
-	                       (y+vinfo.yoffset) * finfo.line_length;
+				if (vinfo.bits_per_pixel == 32) {
+					*(fbp + location) = M.M[y][x];        // Some blue
+					*(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
+					*(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
+					*(fbp + location + 3) = 0;      // No transparency
+				} else  { //assume 16bpp
+					int b = 10;
+					int g = (x-100)/6;     // A little green
+					int r = 31-(y-100)/16;    // A lot of red
+					unsigned short int t = r<<11 | g << 5 | b;
+					*((unsigned short int*)(fbp + location)) = t;
+				}
+			}
+		}
+		
+		//check if plane is out of screen
+		if (isOut(&pesawat,-300,0)){
+    		moveHorizontal(&pesawat,1500);
+    	}
+		
+		//check collide condition
+		if (isObjectCollide(pesawat, &M, c1) == 1) {
+			ledakan = makeLedakan(550,100);
+			pesawat = makePesawat(1500,100);
+			collide = 1;
+			
+			//what to do next
+			resetMatrix(&M);
+			gambarObject(pesawat, &M, c1);
+			gambarObject(meriam, &M, c3);
+			gambarObject(ledakan, &M, c4);
+			for (j = 0; j < nBullets; ++j) {
+				gambarObject(bullets[j], &M, c2);
+			}
+			for (y = 0; y < 700; y++) {
+				for (x = 0; x < 1200; x++) {
+					location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+							   (y+vinfo.yoffset) * finfo.line_length;
 
-	            if (vinfo.bits_per_pixel == 32) {
-	                *(fbp + location) = M.M[y][x];        // Some blue
-	                *(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
-	                *(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
-	                *(fbp + location + 3) = 0;      // No transparency
-	            } else  { //assume 16bpp
-	                int b = 10;
-	                int g = (x-100)/6;     // A little green
-	                int r = 31-(y-100)/16;    // A lot of red
-	                unsigned short int t = r<<11 | g << 5 | b;
-	                *((unsigned short int*)(fbp + location)) = t;
-	            }
-	        }
-	    }
-	    if (isOut(&pesawat,-300,0)){
-	    	moveHorizontal(&pesawat,1500);
-	    }
-
-    }
-    Object peluru = makePeluru(600,500);
-
-    do{
-	    moveVertical(&peluru,-2);
-
-	    // Figure out where in memory to put the pixel
-	    for (y = 0; y < 700; y++) {
-	        for (x = 0; x < 1200; x++) {
-	            location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
-	                       (y+vinfo.yoffset) * finfo.line_length;
-
-	            if (vinfo.bits_per_pixel == 32) {
-	                *(fbp + location) = M.M[y][x];        // Some blue
-	                *(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
-	                *(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
-	                *(fbp + location + 3) = 0;      // No transparency
-	            } else  { //assume 16bpp
-	                int b = 10;
-	                int g = (x-100)/6;     // A little green
-	                int r = 31-(y-100)/16;    // A lot of red
-	                unsigned short int t = r<<11 | g << 5 | b;
-	                *((unsigned short int*)(fbp + location)) = t;
-	            }
-	        }
-	    }
-
-
-        if (isObjectCollide(pesawat, &M, c1) == 1) {
-        	ledakan = makeLedakan(550,100);
-        	pesawat = makePesawat(1500,100);
-        }
-
-	    moveHorizontal(&pesawat,-2);
-
-	    if (isOut(&pesawat,-300,0)){
-	    	moveHorizontal(&pesawat,1500);
-	    }
-
-
-		resetMatrix(&M);
-		gambarObject(pesawat, &M, c1);
-		gambarObject(peluru, &M, c2);
-	    gambarObject(meriam, &M, c3);
-	    gambarObject(ledakan, &M, c4);
-
-    }while(!isObjectCollide(pesawat, &M, c1));
-
-
-    //print last condition
-    moveVertical(&peluru,-300);
-	ledakan = makeLedakan(550,100);
-	pesawat = makePesawat(1500,100);
-	resetMatrix(&M);
-	gambarObject(pesawat, &M, c1);
-	gambarObject(peluru, &M, c2);
-    gambarObject(meriam, &M, c3);
-    gambarObject(ledakan, &M, c4);
-    for (y = 0; y < 700; y++) {
-        for (x = 0; x < 1200; x++) {
-            location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
-                       (y+vinfo.yoffset) * finfo.line_length;
-
-            if (vinfo.bits_per_pixel == 32) {
-                *(fbp + location) = M.M[y][x];        // Some blue
-                *(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
-                *(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
-                *(fbp + location + 3) = 0;      // No transparency
-            } else  { //assume 16bpp
-                int b = 10;
-                int g = (x-100)/6;     // A little green
-                int r = 31-(y-100)/16;    // A lot of red
-                unsigned short int t = r<<11 | g << 5 | b;
-                *((unsigned short int*)(fbp + location)) = t;
-            }
-        }
-    }
+					if (vinfo.bits_per_pixel == 32) {
+						*(fbp + location) = M.M[y][x];        // Some blue
+						*(fbp + location + 1) = M.M[y][x]; //15+(x-100)/2;     // A little green
+						*(fbp + location + 2) = M.M[y][x]; //200-(y-100)/5;    // A lot of red
+						*(fbp + location + 3) = 0;      // No transparency
+					} else  { //assume 16bpp
+						int b = 10;
+						int g = (x-100)/6;     // A little green
+						int r = 31-(y-100)/16;    // A lot of red
+						unsigned short int t = r<<11 | g << 5 | b;
+						*((unsigned short int*)(fbp + location)) = t;
+					}
+				}
+			}
+		}
+	} while (collide == 0);
 
     //closing connection
     end = 1;
     munmap(fbp, screensize);
     close(fbfd);
 
-
 	if(pthread_join(thread_keypress, NULL)) {
-
 		fprintf(stderr, "Error joining thread\n");
 		return 2;
 	}
-
-
+	if(pthread_join(thread_bullet, NULL)) {
+		fprintf(stderr, "Error joining thread 2\n");
+		return 2;
+	}
     return 0;
 }
