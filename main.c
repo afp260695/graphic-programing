@@ -221,7 +221,7 @@ int main(){
 	} while (collide == 0);
 
     //closing connection
-    end = 1;
+    end = 0;
     munmap(fbp, screensize);
     close(fbfd);
 
